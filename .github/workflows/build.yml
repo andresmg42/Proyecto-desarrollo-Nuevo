@@ -84,6 +84,7 @@ jobs:
           args: >
             -Dsonar.branch.name=${{github.ref_name}}
             -Dsonar.python.coverage.reportPaths=coverage-reports/coverage-report.xml
+            -Dsonar.verbose=true
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           
