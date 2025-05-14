@@ -7,5 +7,6 @@ __pycache__/
 .venv
 pruebas.py
 db.sqlite3
-__init__.py
 .vscode
+coverage.xml
+.coverage
