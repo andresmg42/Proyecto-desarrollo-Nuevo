@@ -64,3 +64,13 @@ class URLRoutingAndViewTests(TestCase):
     def test_search_users_products_missing_params(self):
         res = self.client.get('/api/search_users_products/', {'criteria': 'usuario_id'})
         self.assertEqual(res.status_code, 400)
+
+    def test_delete_all_user_products(self):
+        res = self.client.delete(f'/api/delete_all_userProducts/?user_id={self.user.id}')
+        self.assertEqual(res.status_code, 204)
+        self.assertEqual(ProductoUsuario.objects.filter(usuario=self.user).count(), 0)
+
+    def test_url_resolves_correctly(self):
+        self.assertEqual(resolve('/api/filter_products/').func, views.search_products)
+        self.assertEqual(resolve('/api/search_users_products/').func, views.search_users_products)
+        self.assertEqual(resolve('/api/delete_all_userProducts/').func, views.delete_all_user_products)
