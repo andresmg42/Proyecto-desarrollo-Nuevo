@@ -3,7 +3,9 @@ tienda/gestion/__pycache__/urls.cpython-312.pyc
 tienda/gestion/__pycache__/urls.cpython-312.pyc
 tienda/gestion/__pycache__/views.cpython-312.pyc
 
-__pycache__
+__pycache__/
 .venv
 pruebas.py
 db.sqlite3
+__init__.py
+.vscode
