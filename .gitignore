@@ -8,3 +8,5 @@ __pycache__/
 pruebas.py
 db.sqlite3
 .vscode
+coverage.xml
+.coverage
