@@ -19,15 +19,8 @@ import cloudinary.api
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
-
-# SECURITY WARNING: keep the secret key used in production secret!
-
-
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 # despliegue
 
@@ -101,18 +94,24 @@ WSGI_APPLICATION = "tienda.wsgi.application"
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
-# DATABASES = {
-#     'default': dj_database_url.config(
-#         default=os.environ.get("DATABASE_URL")  # Configura esta variable en Render
-#     )
-# }
+IS_PRODUCTION = os.environ.get('PRODUCTION', False)
 
-DATABASES = {
+
+
+if IS_PRODUCTION:
+    DATABASES = {
+        'default': dj_database_url.config(
+            default=os.environ.get("DATABASE_URL")
+        )
+    }
+else:
+    # Local development database configuration (SQLite)
+    DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.sqlite3',
             'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
         }
-}
+    }
 
 
 # Password validation
@@ -215,12 +214,6 @@ RECAPTCHA_PUBLIC_KEY = "6Ldch5QqAAAAAJWAlfhVj8E7LFxqh4ezcB40DTqJ"
 RECAPTCHA_PRIVATE_KEY = "6Ldch5QqAAAAABw5ohrwoVQ9y5danUtqDWdcaJwV"
 
 
-#CONFIGURAR CON CREDECIALES DEL SITIO WEB
-# CLOUDINARY_STORAGE = {
-#     'CLOUD_NAME': 'dkv2wue54',
-#     'API_KEY': '326551833656289',
-#     'API_SECRET': 'hwK_e29GDXiO-NAET6Nq6AhKw9U'
-# }
 
 cloudinary.config(
     cloud_name='dkv2wue54',
