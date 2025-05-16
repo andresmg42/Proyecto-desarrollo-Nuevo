@@ -34,11 +34,6 @@ class PedidoViewSetTest(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data['id'], self.pedido.id)
 
-    def tearDown(self):
-        User.objects.all().delete()
-        Pedido.objects.all().delete()
-        Producto.objects.all().delete()
-        Categoria.objects.all().delete()
 
 class PedidoProductoViewSetTest(APITestCase):
     def setUp(self):
@@ -87,8 +82,3 @@ class PedidoProductoViewSetTest(APITestCase):
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data['id'], self.pedido_producto.id)
-    def tearDown(self):
-        User.objects.all().delete()
-        Pedido.objects.all().delete()
-        Producto.objects.all().delete()
-        Categoria.objects.all().delete()
