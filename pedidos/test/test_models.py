@@ -24,6 +24,12 @@ class PedidoModelTest(TestCase):
         self.assertEqual(self.pedido.direccion, 'Calle Real')
         self.assertTrue(self.pedido.estado_pedido)
 
+    def tearDown(self):
+        User.objects.all().delete()
+        Pedido.objects.all().delete()
+        Producto.objects.all().delete()
+        Categoria.objects.all().delete()
+
 class PedidoProductoModelTest(TestCase):
     def setUp(self):
         self.user = User.objects.create_user(username='cliente', password='1234')
@@ -63,3 +69,8 @@ class PedidoProductoModelTest(TestCase):
         self.assertEqual(self.pedido_producto.cantidad_producto_carrito, 1)
         self.assertEqual(self.pedido_producto.pedido_ppid, self.pedido)
         self.assertEqual(self.pedido_producto.producto_ppid, self.producto)
+    def tearDown(self):
+        User.objects.all().delete()
+        Pedido.objects.all().delete()
+        Producto.objects.all().delete()
+        Categoria.objects.all().delete()

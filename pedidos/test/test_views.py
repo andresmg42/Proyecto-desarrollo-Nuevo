@@ -5,10 +5,12 @@ from pedidos.models import Pedido, PedidoProducto
 from productos.models import Producto, Categoria
 from django.contrib.auth.models import User
 from datetime import datetime, time
+from django.contrib.auth.hashers import make_password
 
 class PedidoViewSetTest(APITestCase):
     def setUp(self):
-        self.user = User.objects.create_user(username='cliente', password='1234')
+        test_password = make_password('testpass123!')
+        self.user = User.objects.create_user(username='cliente', password=test_password)
         self.client.force_authenticate(user=self.user)
 
         self.pedido = Pedido.objects.create(
@@ -32,9 +34,16 @@ class PedidoViewSetTest(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data['id'], self.pedido.id)
 
+    def tearDown(self):
+        User.objects.all().delete()
+        Pedido.objects.all().delete()
+        Producto.objects.all().delete()
+        Categoria.objects.all().delete()
+
 class PedidoProductoViewSetTest(APITestCase):
     def setUp(self):
-        self.user = User.objects.create_user(username='cliente', password='1234')
+        test_password = make_password('testpass123!')
+        self.user = User.objects.create_user(username='cliente', password=test_password)
         self.client.force_authenticate(user=self.user)
 
 
@@ -78,3 +87,8 @@ class PedidoProductoViewSetTest(APITestCase):
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data['id'], self.pedido_producto.id)
+    def tearDown(self):
+        User.objects.all().delete()
+        Pedido.objects.all().delete()
+        Producto.objects.all().delete()
+        Categoria.objects.all().delete()

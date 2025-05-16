@@ -25,6 +25,12 @@ class PedidoSerializerTest(APITestCase):
         self.assertEqual(data['direccion'], 'Calle 123')
         self.assertEqual(data['estado_pedido'], True)
         self.assertEqual(data['fecha'], self.pedido.fecha.strftime('%Y-%m-%d'))
+    
+    def tearDown(self):
+        User.objects.all().delete()
+        Pedido.objects.all().delete()
+        Producto.objects.all().delete()
+        Categoria.objects.all().delete()
 
 class PedidoProductoSerializerTest(APITestCase):
     def setUp(self):
@@ -64,3 +70,9 @@ class PedidoProductoSerializerTest(APITestCase):
         self.assertEqual(data['pedido_ppid'], self.pedido.id)
         self.assertEqual(data['producto_ppid'], self.producto.id)
         self.assertEqual(data['cantidad_producto_carrito'], 3)
+        
+    def tearDown(self):
+        User.objects.all().delete()
+        Pedido.objects.all().delete()
+        Producto.objects.all().delete()
+        Categoria.objects.all().delete()
