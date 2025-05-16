@@ -1,0 +1,66 @@
+from rest_framework.test import APITestCase
+from pedidos.models import Pedido, PedidoProducto
+from productos.models import Producto, Categoria
+from django.contrib.auth.models import User
+from pedidos.serializer import PedidoSerializer, PedidoProductoSerializer
+from datetime import datetime, time
+
+class PedidoSerializerTest(APITestCase):
+    def setUp(self):
+        self.user = User.objects.create_user(username='cliente', password='1234')
+        self.pedido = Pedido.objects.create(
+            usuarios=self.user,
+            metodo_pago='Tarjeta',
+            direccion='Calle 123',
+            hora=time(14, 0, 0),
+            estado_pedido=True,
+            fecha=datetime.today().date()
+        )
+
+    def test_pedido_serializer_output(self):
+        serializer = PedidoSerializer(self.pedido)
+        data = serializer.data
+        self.assertEqual(data['usuarios'], self.user.id)
+        self.assertEqual(data['metodo_pago'], 'Tarjeta')
+        self.assertEqual(data['direccion'], 'Calle 123')
+        self.assertEqual(data['estado_pedido'], True)
+        self.assertEqual(data['fecha'], self.pedido.fecha.strftime('%Y-%m-%d'))
+
+class PedidoProductoSerializerTest(APITestCase):
+    def setUp(self):
+        self.user = User.objects.create_user(username='cliente', password='1234')
+        
+        # Crear categoría con el método correcto
+        self.categoria = Categoria()
+        self.categoria.save()
+        
+        # Crear producto mínimo necesario
+        self.producto = Producto.objects.create(
+            categoria=self.categoria,
+            estado_producto=True,
+            nombre='Pizza',
+            precio=20.0,
+            descripcion='Pizza familiar',
+            cantidad_producto=15
+        )
+        
+        self.pedido = Pedido.objects.create(
+            usuarios=self.user,
+            metodo_pago='Efectivo',
+            direccion='Av. Siempre Viva',
+            hora=time(12, 0, 0),
+            estado_pedido=False,
+            fecha=datetime.today().date()
+        )
+        self.pedido_producto = PedidoProducto.objects.create(
+            pedido_ppid=self.pedido,
+            producto_ppid=self.producto,
+            cantidad_producto_carrito=3
+        )
+
+    def test_pedido_producto_serializer_output(self):
+        serializer = PedidoProductoSerializer(self.pedido_producto)
+        data = serializer.data
+        self.assertEqual(data['pedido_ppid'], self.pedido.id)
+        self.assertEqual(data['producto_ppid'], self.producto.id)
+        self.assertEqual(data['cantidad_producto_carrito'], 3)
