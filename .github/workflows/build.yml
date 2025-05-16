@@ -4,13 +4,13 @@ on:
     branches:
       - main
       - dev
-      - featureAndresOrtega-2241885
+      - feature/AndresAlcantara-2242517
   pull_request:
     types: [opened, synchronize, reopened]
     branches:
       - main
       - dev
-      - featureAndresOrtega-2241885
+      - feature/AndresAlcantara-2242517
 jobs:
   django-test:
     name: Django Tests
