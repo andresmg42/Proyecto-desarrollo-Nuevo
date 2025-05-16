@@ -51,6 +51,7 @@ class PedidoProductoViewSetTest(APITestCase):
             cantidad_producto=20
         )
 
+
         self.pedido = Pedido.objects.create(
             usuarios=self.user,
             metodo_pago='Tarjeta',

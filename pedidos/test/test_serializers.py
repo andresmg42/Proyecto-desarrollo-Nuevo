@@ -30,11 +30,11 @@ class PedidoProductoSerializerTest(APITestCase):
     def setUp(self):
         self.user = User.objects.create_user(username='cliente', password='1234')
         
-        # Crear categoría con el método correcto
+
         self.categoria = Categoria()
         self.categoria.save()
         
-        # Crear producto mínimo necesario
+
         self.producto = Producto.objects.create(
             categoria=self.categoria,
             estado_producto=True,

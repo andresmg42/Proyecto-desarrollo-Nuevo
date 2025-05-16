@@ -28,11 +28,11 @@ class PedidoProductoModelTest(TestCase):
     def setUp(self):
         self.user = User.objects.create_user(username='cliente', password='1234')
         
-        # Crear categoría
+
         self.categoria = Categoria()
         self.categoria.save()
         
-        # Crear producto
+
         self.producto = Producto.objects.create(
             categoria=self.categoria,
             estado_producto=True,
@@ -57,7 +57,6 @@ class PedidoProductoModelTest(TestCase):
         )
 
     def test_pedido_producto_str(self):
-        # Ajustado para coincidir con la implementación actual del modelo
         self.assertEqual(str(self.pedido_producto), f'PedidoProducto object ({self.pedido_producto.id})')
 
     def test_pedido_producto_fields(self):
