@@ -3,10 +3,12 @@ from pedidos.models import Pedido, PedidoProducto
 from productos.models import Producto, Categoria
 from django.contrib.auth.models import User
 from datetime import datetime, time
+from django.contrib.auth.hashers import make_password
 
 class PedidoModelTest(TestCase):
     def setUp(self):
-        self.user = User.objects.create_user(username='cliente', password='1234')
+        test_password = make_password('testpass123!')
+        self.user = User.objects.create_user(username='cliente', password=test_password)
         self.pedido = Pedido.objects.create(
             usuarios=self.user,
             metodo_pago='Tarjeta',
@@ -32,7 +34,8 @@ class PedidoModelTest(TestCase):
 
 class PedidoProductoModelTest(TestCase):
     def setUp(self):
-        self.user = User.objects.create_user(username='cliente', password='1234')
+        test_password = make_password('testpass123!')
+        self.user = User.objects.create_user(username='cliente', password=test_password)
         
 
         self.categoria = Categoria()
