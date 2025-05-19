@@ -49,7 +49,7 @@ class UsuarioView(viewsets.ModelViewSet):
             user.save()
 
             token = Token.objects.create(user=user)
-            return Response({'token': token.key, 'user': serializer.data}, status=status.HTTP_201_CREATED)
+            return Response({'token': token[0].key, 'user': serializer.data}, status=status.HTTP_201_CREATED)
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -132,7 +132,7 @@ def login(request):
     token= Token.objects.get_or_create(user=user)
     serializer=UsuarioSerializer(instance=user)
     
-    return Response({"token":token.key, "user":serializer.data}, status=status.HTTP_200_OK)
+    return Response({"token":token[0].key, "user":serializer.data}, status=status.HTTP_200_OK)
 
 @authentication_classes([TokenAuthentication])
 @api_view(['GET'])
