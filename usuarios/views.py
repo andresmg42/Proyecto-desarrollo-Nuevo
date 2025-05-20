@@ -185,8 +185,10 @@ def register_user(request):
         user.save()
         send_verification_email(user)
 
+
         token,created = Token.objects.get_or_create(user=user)
         return Response({'token': token.key, 'user': serializer.data}, status=status.HTTP_201_CREATED)
+
 
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
