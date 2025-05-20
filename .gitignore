@@ -13,3 +13,6 @@ coverage.xml
 venv/*
 
 .env
+
+run-sonar.ps1
+sonar-project.properties

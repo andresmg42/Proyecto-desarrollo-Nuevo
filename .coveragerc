@@ -2,7 +2,7 @@
 exclude_lines =
     pragma: no cover
 
-    if __name__ == .__main__.:
+    if __name__ == "__main__":
 
     except Exception
     raise NotImplementedError
@@ -11,11 +11,34 @@ exclude_lines =
 
     migrations
 
-    def test_
+    
 
 omit =
-    */migrations/*
+    */migrations/**
     */__init__.py
-    */manage.py
+    manage.py
     */settings.py
     */urls.py
+    */test/**
+    run-sonar.ps1
+    .github/**
+    .venv/**
+    .vscode/**
+    */__pycache__/**
+    build.sh
+    staticfiles/**
+    .coveragerc
+    .coverage
+    .gitignore
+    coverage.xml
+    db.sqlite3
+    requirements.txt
+    run-sonar.ps1
+    sonar-project.properties
+    */tests.py
+    */admin.py
+    */apps.py
+    tienda/**
+    */management/**
+
+

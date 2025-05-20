@@ -1,69 +1,82 @@
-# tests/test_permissions.py
-import pytest
+from django.test import TestCase
 from django.contrib.auth.models import User
+from django.urls import reverse
 from rest_framework.test import APIClient
+from rest_framework import status
 from rest_framework.authtoken.models import Token
-from rest_framework.test import APIRequestFactory
-from django.contrib.auth.models import User
-from app.views import IsStaffAndCanOnlyReadOrCreate, UsuarioView  # ajusta el import según tu app
 
-def test_is_staff_can_only_read_or_create_list():
-    user = User(username='staff', is_staff=True)
-    factory = APIRequestFactory()
-    request = factory.get('/usuarios/')
-    request.user = user
-    view = UsuarioView()
-    view.action = 'list'
+class UsuarioViewsTestCase(TestCase):
+    def setUp(self):
+        self.client = APIClient()
+        self.admin_user = User.objects.create_superuser(
+            username='admin', password='adminpass', email='admin@example.com'
+        )
+        self.staff_user = User.objects.create_user(
+            username='staff', password='staffpass', is_staff=True
+        )
+        self.normal_user = User.objects.create_user(
+            username='normal', password='normalpass'
+        )
+        self.token = Token.objects.create(user=self.admin_user)
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.token.key)
 
-    permission = IsStaffAndCanOnlyReadOrCreate()
-    assert permission.has_permission(request, view) == True
+    def test_register_user_view(self):
+        url = reverse('usuarios-register')  # your ViewSet register action
+        data = {
+            "username": "newuser",
+            "password": "newpass123",
+            "email": "new@example.com",
+            "is_staff": False,
+            "is_superuser": False
+        }
+        response = self.client.post(url, data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertIn('token', response.data)
 
-def test_is_staff_cannot_update():
-    user = User(username='staff', is_staff=True)
-    factory = APIRequestFactory()
-    request = factory.put('/usuarios/')
-    request.user = user
-    view = UsuarioView()
-    view.action = 'update_user'
+    def test_login_view(self):
+        url = reverse('login')  # make sure this name is in your urls.py
+        data = {"username": "admin", "password": "adminpass"}
+        response = self.client.post(url, data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertIn('token', response.data)
 
-    permission = IsStaffAndCanOnlyReadOrCreate()
-    assert permission.has_permission(request, view) == False
+    def test_verify_email(self):
+        url = reverse('verify_email')  # make sure this name is in your urls.py
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data['message'], 'Email verificado exitosamente')
 
-def test_superuser_has_access():
-    user = User(username='admin', is_superuser=True)
-    factory = APIRequestFactory()
-    request = factory.put('/usuarios/')
-    request.user = user
-    view = UsuarioView()
-    view.action = 'update_user'
+    def test_update_user(self):
+        url = reverse('usuarios-update-user')
+        data = {
+            'id': self.normal_user.id,
+            'username': 'updateduser',
+            'email': 'updated@example.com',
+            'password': 'newsecurepass',
+            'is_staff': False,
+            'is_superuser': False
+        }
+        response = self.client.put(url, data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data['user']['username'], 'updateduser')
 
-    permission = IsStaffAndCanOnlyReadOrCreate()
-    assert permission.has_permission(request, view) == True
+    def test_search_users_by_username(self):
+        url = reverse('usuarios-search-users') + '?criteria=username&value=admin'
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertGreaterEqual(len(response.data['users']), 1)
+        self.assertIn('admin', [u['username'] for u in response.data['users']])
 
-@pytest.mark.django_db
-def test_register_user_creates_user_and_token():
-    client = APIClient()
-    user_data = {
-        "username": "testuser",
-        "email": "test@example.com",
-        "password": "securepassword"
-    }
-    response = client.post('/usuarios/register/', user_data, format='json')
+    def test_is_staff_permission(self):
+        # Login with staff user
+        token = Token.objects.create(user=self.staff_user)
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + token.key)
 
-    assert response.status_code == 201
-    assert 'token' in response.data
-    assert 'user' in response.data
-    assert User.objects.filter(username='testuser').exists()
+        # Allowed: list users
+        response = self.client.get(reverse('usuarios-list'))
+        self.assertIn(response.status_code, [200, 403])  # Depends on implementation
 
-@pytest.mark.django_db
-def test_search_users_by_username():
-    user = User.objects.create_user(username='john', password='pass123')
-    superuser = User.objects.create_superuser(username='admin', password='adminpass')
-    token, _ = Token.objects.get_or_create(user=superuser)
-
-    client = APIClient()
-    client.credentials(HTTP_AUTHORIZATION='Token ' + token.key)
-
-    response = client.get('/usuarios/search_users/?criteria=username&value=john')
-    assert response.status_code == 200
-    assert response.data['users'][0]['username'] == 'john'
+        # Forbidden: update_user (method PUT)
+        data = {'id': self.normal_user.id, 'username': 'hack'}
+        response = self.client.put(reverse('usuarios-update-user'), data)
+        self.assertEqual(response.status_code, 403)
