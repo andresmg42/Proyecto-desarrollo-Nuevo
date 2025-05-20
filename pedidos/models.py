@@ -18,8 +18,7 @@ class Pedido(models.Model):
         verbose_name_plural='pedidos'
        
     
-    def __str__(self):
-        return self.fecha.strftime("%Y-%m-%d %H:%M:%S")
+    
     
 class PedidoProducto(models.Model):
     pedido_ppid = models.ForeignKey(Pedido, on_delete=models.CASCADE)
