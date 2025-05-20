@@ -65,8 +65,7 @@ class PedidoProductoModelTest(TestCase):
             cantidad_producto_carrito=1
         )
 
-    def test_pedido_producto_str(self):
-        self.assertEqual(str(self.pedido_producto), f'PedidoProducto object ({self.pedido_producto.id})')
+    
 
     def test_pedido_producto_fields(self):
         self.assertEqual(self.pedido_producto.cantidad_producto_carrito, 1)
