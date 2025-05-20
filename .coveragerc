@@ -23,4 +23,5 @@ omit =
     build.sh
     staticfiles/**
     .github/**
+    */test/**
     
