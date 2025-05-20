@@ -19,3 +19,8 @@ omit =
     */manage.py
     */settings.py
     */urls.py
+    requirements.txt
+    build.sh
+    staticfiles/**
+    .github/**
+    
