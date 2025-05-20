@@ -5,6 +5,7 @@ charset-normalizer==3.4.0
 cloudinary==1.41.0
 coreapi==2.3.3
 coreschema==0.0.4
+coverage==7.8.0
 dj-database-url==2.3.0
 Django==4.2.16
 django-cloudinary-storage==0.3.0
@@ -21,6 +22,7 @@ MarkupSafe==3.0.2
 packaging==24.2
 pillow==11.0.0
 psycopg2-binary==2.9.10
+python-dotenv==1.1.0
 pytz==2024.2
 requests==2.32.3
 setuptools==75.6.0
