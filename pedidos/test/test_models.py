@@ -19,7 +19,7 @@ class PedidoModelTest(TestCase):
         )
 
     def test_pedido_str(self):
-        self.assertIn(str(self.pedido.id), str(self.pedido))
+        self.assertIn(str(self.pedido),f'Pedido object ({self.pedido.id})')
 
     def test_pedido_fields(self):
         self.assertEqual(self.pedido.metodo_pago, 'Tarjeta')
